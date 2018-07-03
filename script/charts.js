@@ -109,24 +109,16 @@ function addDateChart(df){
     var s = new Array();
     
     df.forEach(element => {
-        x.push(new Date(element['date']));
-        y.push(1);
+        x.push(new Date(element['tweet_created']));
+        y.push(parseInt(element['negative'])+parseInt(element['positive'])+parseInt(element['neutral']));
     });
     
+//    console.log(x,y)
     
     window.dateData = {
       type: 'bar',
       x: x,
       y: y,
-      transforms: [{
-        type: 'aggregate',
-        groups: x,
-        aggregations: [{
-            target: 'y',
-            func: 'sum',
-            enabled: true
-        }]
-      }],
       marker: {color: '#000000'}
     };
     
@@ -161,7 +153,8 @@ function addDateChart(df){
     dateChart.on('plotly_click', function(data){
         date = (data['points']['0']['x']).split(' ')[0];
         
-        updateTimeChart();
+//        updateTimeChart();
+        updateWordClouds()
         updateMap();
         updateAirlinesChart();
     });
@@ -171,15 +164,11 @@ function addDateChart(df){
 function updateDateChart(){
     x = [];
     y = [];
-    c = colors[sentiment];
+    c = colors[sentiment];    
     
-    var dataFilter = dataCSV.filter(function(el){
-        return el['airline_sentiment'] == sentiment
-    });    
-    
-    dataFilter.forEach(element => {
-        x.push(new Date(element['date']));
-        y.push(1);
+    dataCSVDate.forEach(element => {
+        x.push(new Date(element['tweet_created']));
+        y.push(parseInt(element[sentiment]));
     });
     
     dateData['marker']['color'] = c;
@@ -187,6 +176,17 @@ function updateDateChart(){
     dateData['y'] = y;
     
     Plotly.update(dateChart, [dateData], dateLayout);
+};
+
+
+function updateWordClouds(){
+    if(sentiment != 'general'){
+        var imgSrc = "data/figures/BoWs/BoW_"+date+"_"+sentiment+".jpg"   
+        
+        Plotly.purge(timeChart);
+        $('#lineChartTime').empty();
+        $('#lineChartTime').append('<img src="'+imgSrc+'" class="img-fluid mx-auto d-block imgWc">');
+    }    
 };
 
 

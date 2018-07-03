@@ -1,17 +1,20 @@
 var dbCSV = '../data/tweets_public_clean.csv';
 var dbCSVMap = '../data/tweets_public_map.csv';
 var dbCSVAirline = '../data/tweets_public_airline.csv';
+var dbCSVDate = '../data/tweets_by_date.csv';
+
 var dataCSV = new Array();
 var dataCSVMap = new Array();
 var dataCSVAirline = new Array();
+var dataCSVDate = new Array();
 
 window.sentiment = 'general';
 window.date = 'general';
 
 window.colors = {
-    negative: '#E4523B',
-    positive: '#3DB296',
-    neutral: '#E8931E',
+    negative: '#ff5050',
+    positive: '#009933',
+    neutral: '#333399',
     general: '#000000'
 };
 
@@ -24,7 +27,6 @@ Papa.parse(dbCSV, {
         dataCSV = results.data;
         
         addPieChart(dataCSV);
-        addDateChart(dataCSV);
         addTimeChart(dataCSV);
     }
 });
@@ -46,5 +48,15 @@ Papa.parse(dbCSVAirline, {
         dataCSVAirline = results.data;
         
         addAirlinesChart(dataCSVAirline);
+    }
+});
+
+Papa.parse(dbCSVDate, {
+    header: true,
+    download: true,
+    complete: function(results) {
+        dataCSVDate = results.data;
+        
+        addDateChart(dataCSVDate);
     }
 });

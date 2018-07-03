@@ -60,6 +60,8 @@
                 Even though most of the tweets are labeled as negative, and hence they dominate, we can see that in the US the people write way more for complaining, while in Spain they write more or less the same amount for every category. 
 
             </p>        
+            <img src="data/figures/Location.jpg" class="img-fluid mx-auto d-block" alt="Location of tweets">
+            </p>
             <h3>
                 Airlines
             </h3>
@@ -68,13 +70,25 @@
                 The tweet sentiment distribution is very similar for the four most popular airlines and it follows the sentiment distribution of the whole sample, that is, most of the tweets (~50%) are negative and a small fraction (~20%) is positive.<br>
                 We conclude that the airline name is not a good indicator of the tweet sentiment because the most quoted airlines are the most quoted among the three classes. 
             </p>        
+            <img src="data/figures/piechartairlines.jpg" class="img-fluid mx-auto d-block" alt="distribution of airlines">
+            <img src="data/figures/AirlinesBYSentiment.jpg class="img-fluid mx-auto d-block" alt="categories between airlines">
+            </p>
             <h3>
                 Word Clouds
             </h3>
             <p class="text-justify">
                 It can also be seen which are the most relevant words of each sentiment category by making a word cloud.<br>
                 If we neglect those words appearing in both positive and negative categories we obtain vocabulary associated with compliments and complaints respectively.
-            </p>   
+            </p>
+            <img src="data/figures/BoW/BoW_negative.jpg" class="img-fluid mx-auto d-block" alt="Word cloud negative">
+            <img src="data/figures/BoW/BoW_negativeNOintersection.jpg" class="img-fluid mx-auto d-block" alt="Word cloud negative No intersection">
+            </p>
+            <img src="data/figures/BoW/BoW_neutral.jpg" class="img-fluid mx-auto d-block" alt="Word cloud neutral">
+            <img src="data/figures/BoW/BoW_neutralNOintersection.jpg" class="img-fluid mx-auto d-block" alt="Word cloud neutral No intersection">
+            </p>
+            <img src="data/figures/BoW/BoW_positive.jpg" class="img-fluid mx-auto d-block" alt="Word cloud positive">
+            <img src="data/figures/BoW/BoW_positiveNOintersection.jpg" class="img-fluid mx-auto d-block" alt="Word cloud postive No intersection">
+            </p>
             <h3>
                 Temporal analysis
             </h3>
@@ -85,12 +99,21 @@
                 There is also another wide peak on January 3rd. The word clouds on this day show that the most frequent words were “puerta emergencia”, “pasajero”, “harto”, “sale”, “avión”, that refer to a shocking new: an impatient Ryanair passenger jumps out the emergency window before take-off because he was fed up waiting due to a delay in his flight. The video and the article can be seen here.<br>
                 There was also an unrelated event, due to a cyclone storm affecting the East Coast of the USA on the same dates that caused the cancellation of more than 3000 flights, and this could be another reason for the amount of negative tweets (specially, maybe, for those coming from US users).
             </p>
+            <img src="data/figures/temporal_analysis.png" class="img-fluid mx-auto d-block" alt="temporal analysis">
+            </p>
             <h3>
                 Hastags
             </h3>
             <p class="text-justify">
                 Twitter users create and use hashtags to infomaly tag messages with a specific theme or content. We explored whether hashtags mentioned in the dataset could be used to identify the sentiment of the tweet. We found 780 different hashtags, with a total of 1932 quotations. Among them, the more repeated ones are <kbd>#holaargentina</kbd> and <kbd>#holacolombia</kbd>, which are related to the two marketing campaigns by Iberia mentioned previously. They are followed by <kbd>#iberia</kbd> and <kbd>#ryanair</kbd>. We observe that in the case of negative tweets, most hashtags refer to airlines while for positive and neutral, although a lot refer also to iberia, we see that there are a significant amount of them referring to other issues (<kbd>#marketing</kbd>, <kbd>#holaeuropa</kbd>, <kbd>#holaargentina</kbd>, etc.).
             </p>  
+            <img src="data/figures/hashtagsnegative.jpg" class="img-fluid mx-auto d-block" alt="hashtags of negative tweets">
+            </p>
+            <img src="data/figures/hashtagsneutral.jpg" class="img-fluid mx-auto d-block" alt="hashtags of neutral tweets">
+            </p>
+            <img src="data/figures/hashtagspositive.jpg" class="img-fluid mx-auto d-block" alt="hashtags of positive tweets">
+            </p>
+
             <h3>
                 Emoji
             </h3>
@@ -101,6 +124,10 @@
                 On the other hand, tweets containing only negative emoji were mostly negative (76%). The positive tweets containing a negative emoji are few (8%) and reveal a bad use of negative emoji in the context.<br>
                 Finally, tweets containing both positive and negative emoji are almost always (83%) negative. Thus we conclude that negative emoji are great indicators of negative sentiment tweet, while positive emoji are not as certain in reflecting a positive tweet sentiment.
             </p> 
+            <img src="data/figures/piechartEMONEG.jpg" class="img-fluid mx-auto d-block" alt="only negative emojis">
+            <img src="data/figures/piechartEMOPOS.jpg" class="img-fluid mx-auto d-block" alt="only positive emojis">
+            <img src="data/figures/piechartEMOPOSEMOPOS.jpg" class="img-fluid mx-auto d-block" alt="both negative and positive emojis">
+            </p>
         </div>
         
         <div class="container" id="section2">
@@ -148,6 +175,10 @@
                 By taking a look into the data we found that in the original dataset there were way more negative labeled tweets (48%) than positive (19%) or neutral (33%). This fact, as we will see a little bit further away, will bias our model to be very good at identifying the negative tweets, but not as good at distinguishing between neutral and positive tweets. But let’s not make spoilers!<br>
                 After a first sneak into the data, we realized that there were a number of tweets with identical text that were repeated up to hundreds of times. In some cases, their sentiment label was not uniform. Some were classified as positive and some as neutral: for instance, the tweet “Con @Iberia, mi destino a un solo click. !Deseadme suerte! #HolaColombia. Hola 79 destinos europeos al mejor precio” appears a total of 153 times, of which it is classified as negative 21 times, 76 as neutral and 56 as positive. This would add a lot of confusion into our model, since it would find the exact same vector with two or three different classifications! The total number of tweets with mislabeling is 1178. We decided that the best thing to do was removing these tweets. After that, we started with the cleaning of the remaining dataset.<br>
                 First, we identified which tweets contained positive or negative emoji, which nowadays represents not a negligible fraction of the information in tweets: about 4% of tweets contain emojis (http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0144296). To this scope we selected the most representative emoji related to positive and negative sentiments as defined by the UNICODE emoji list and created a list of emojis for each sentiment. Then, we searched for these into the tweets and created two new columns for each tweet for positive and negative emoji respectively, containing the number of positive or negative emoji that appeared in the tweet. We were able to identify 280 emoji in total.<br>
+
+            </p>
+            <img src="data/figures/House-Cleaning-Services.jpg" class="img-fluid mx-auto d-block">
+            </p>
                 In a second step, we performed a first cleaning of the text by:<br>
             </p>
             <dl>

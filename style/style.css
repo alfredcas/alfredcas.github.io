@@ -7,6 +7,12 @@ dl {
     padding-left: 10%;
 }
 
+/*
+.img-fluid {
+    max-width: 50%;
+}
+*/
+
 .navbar.center .navbar-inner {
     text-align: center;
 }

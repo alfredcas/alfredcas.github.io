@@ -1,0 +1,75 @@
+/*Boostrap*/
+a {
+    color: black;
+}
+
+dl {
+    padding-left: 10%;
+}
+
+.navbar.center .navbar-inner {
+    text-align: center;
+}
+
+.navbar.center .navbar-inner .nav {
+    display:inline-block;
+    float: none;
+}
+
+.btn-secondary {
+    color: rgba(0, 0, 0, 0.25);
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: transparent;
+}
+
+.btn-secondary:hover {
+    color: gray;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: transparent;
+}
+
+.btn-secondary.focus, .btn-secondary:focus {
+    box-shadow: transparent;
+    border-color: transparent;
+}
+
+.btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle {
+    color: black;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: transparent;
+}
+
+hr { 
+    display: block;
+    border-color: rgba(0, 0, 0, 0.25);
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: inset;
+    border-width: 0.5px;
+}
+
+/*Map*/
+#mapid{
+    height: 500px;
+    width: 100%;
+}
+
+/*Chart*/
+.main-svg {
+    position: relative;
+    text-align: center;
+    pointer-events: none;
+}
+
+.svg-container {
+    border-right: 50%;
+    position: relative;
+    text-align: center;
+    left: 0%;
+    right: 0%;
+}

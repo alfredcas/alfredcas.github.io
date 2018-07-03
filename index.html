@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>Feelings Dashboard</title>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>  
+        <script src="script/PapaParse-4.4.0/papaparse.min.js"></script>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" />
+        <link href="style/style.css" rel="stylesheet">
+    </head>
+    <body data-spy="scroll" data-target=".navbar" data-offset="50">
+        <nav class="navbar navbar-expand-sm bg-light justify-content-center">
+            <div class="nav-item"><a class="nav-link" href="#section1">dataset analysis</a></div>
+            <div class="nav-item"><a class="nav-link" href="#section2">data visualization</a></div>
+            <div class="nav-item"><a class="nav-link" href="#section3">classifier</a></div>
+            <div class="nav-item"><a class="nav-link" href="#section4">conclusion</a></div>
+        </nav>
+        
+        <div class="container" id="section1">
+            <hr>
+            <h1>
+                Dataset Analysis
+            </h1>
+            <p class="text-justify">
+                A tweet set fell in our hands lately. It was impossible for us not to look into it and try to see what was it about, who wrote these tweets, when and why.<br>
+                Dataset: 7867 tweets in Spanish from 2017 Oct 25 to 2018 Jan 08 (75 days), with relevant information about:
+                <dl>
+                    <li>tweet text (including emoji)</li>
+                    <li>date</li>
+                    <li>location</li>
+                    <li>sentiment: positive, negative or neutral</li>
+                </dl>
+                The dataset was labeled by the students of the postgraduate course of Data Science and Big Data at the University of Barcelona.<br>
+                A first quick inspection of the dataset shows that among the different sentiments, 48% of the tweets are negative, 33% are neutral and 19% are positive. Thus the dataset is strongly unbalanced towards the negative sentiment (which makes sense, since determining unambiguously the difference between neutral and positive sentiments seems more complicated! Also, it suggests that <kbd>people are more prone to use Twitter to complain</kbd> about their travels rather than thanking the airlines for the service).
+            </p>
+            <h3>
+                Mislabeling
+            </h3>
+            <p class="text-justify">
+                Most of the tweets in the sample (6669 tweets) appear just once but the text of 215 tweets (3%) of the tweets appears repeated (although the tweets have different tweet ids, links, dates and locations, the text is identical). Only 6884 tweets are unique in terms of text.<br>
+                These repeated tweets appear up to ~150 times and they are related to popular news and airlines marketing campaigns. The most popular examples are the competitions organized by Iberia in November and December 2017 to promote their routes in Colombia and Argentina. The competition awarded 120.000 Avios to the participant that was able to win on Iberia’s online slot machine. Participants got an extra turn if they shared the following text on Twitter: “Con @Iberia, mi destino a un solo click. !Deseadme suerte! #HolaArgentina. Hola 79 destinos europeos al mejor precio”. The rules and regulations of the campaigns are available online: #HolaArgetina and #HolaColombia.<br>
+                The shocking result was that the sentiment label for these repeated tweets was not always the same. In some cases, sentiment labels covered the three possible categories (positive, negative and neutral). We computed the majoritary airline sentiment for each of these tweets and re-labeled them creating a new dataframe (tweets_public2.csv) to be used for the dataset analysis. In this new dataframe, repeated tweets with sentiment ties were neglected. These includes 71 tweets, all of them with less than 6 appearances. 
+            </p>
+            <h3>
+                Geographical Information
+            </h3>
+            <p class="text-justify">
+                In this dataset we can look for geographical information, but we soon realize that only 22 tweets contain coordinates associated. We can also look at the “tweet_location” entry, but we also discover that only 439 of them have non null values. <kbd>It looks like people doesn’t like to share their location in Twitter!</kbd> A last chance in knowing something about the geographical information is in the “user_timezone” entry of the dataset. This will not tell us where was the tweet created, but can indicate where is the tweet owner from (or where he/she lived, maybe, when the account was created). If we do so, we see that we have 5119 tweets with this information, which we can plot into the world map. Assuming that the user_timezone tells us where does the account owner is from, we see that most of the tweets are posted by people that is from Spain, with 1851 tweets (36%), followed by US & Canada with 454 tweets (9%).<br>
+                There are also lots of tweets from different parts from Europe and South America. From Africa and Asia there aren’t (almost). This is understandable since the dataset is made of tweets written in Spanish. In the rest of countries, the amount of tweets resembles more or less the distribution of tweets, with more negatives, a bit less of neutrals and positives being the smallest amount.<br>
+                Even though most of the tweets are labeled as negative, and hence they dominate, we can see that in the US the people write way more for complaining, while in Spain they write more or less the same amount for every category. 
+
+            </p>        
+            <h3>
+                Airlines
+            </h3>
+            <p class="text-justify">
+                We used regular expressions to identify which particular airline each tweet was referring to. A considerable amount of tweets (6%) do not mention any particular airline either because the tweet replies to other tweets and/or the limited text field does not include the airline name. We found that there were ~25 airlines mentioned in the dataset, but the most cited is Iberia with 4591 tweets (59%), followed by Ryanair with 1678 tweets (22%), Spanair with 280 tweets (4%), and Vueling with 189 tweets (2%).<br>
+                The tweet sentiment distribution is very similar for the four most popular airlines and it follows the sentiment distribution of the whole sample, that is, most of the tweets (~50%) are negative and a small fraction (~20%) is positive.<br>
+                We conclude that the airline name is not a good indicator of the tweet sentiment because the most quoted airlines are the most quoted among the three classes. 
+            </p>        
+            <h3>
+                Word Clouds
+            </h3>
+            <p class="text-justify">
+                It can also be seen which are the most relevant words of each sentiment category by making a word cloud.<br>
+                If we neglect those words appearing in both positive and negative categories we obtain vocabulary associated with compliments and complaints respectively.
+            </p>   
+            <h3>
+                Temporal analysis
+            </h3>
+            <p class="text-justify">
+                Looking at the temporal information available in the dataset, we could explore different things: the appearance of tweets along time, the allusion to airlines along time, the location of people (or user timezone in case there are no coordinates available).<br>
+                We centered our interest in the appearance of tweets along time. We plotted the occurrence of tweets as a function of the hour of the day and we saw that the tweets distribution resembles the daily activity cycle: during night few tweets are created, and the tweet creation rate increases as the day goes by, with a peak around 15:00 UTC. The behaviour is the same for the three sentiment categories.<br>
+                Looking at the number of tweets as a function of date, we observe a significant peak on December 13th. The most used words on this day were “huelga”, “pilotos”, “demora”, “devolución” that refer to the strike announcement made by Ryanair pilots right before the Christmas vacations, as reported here.<br>
+                There is also another wide peak on January 3rd. The word clouds on this day show that the most frequent words were “puerta emergencia”, “pasajero”, “harto”, “sale”, “avión”, that refer to a shocking new: an impatient Ryanair passenger jumps out the emergency window before take-off because he was fed up waiting due to a delay in his flight. The video and the article can be seen here.<br>
+                There was also an unrelated event, due to a cyclone storm affecting the East Coast of the USA on the same dates that caused the cancellation of more than 3000 flights, and this could be another reason for the amount of negative tweets (specially, maybe, for those coming from US users).
+            </p>
+            <h3>
+                Hastags
+            </h3>
+            <p class="text-justify">
+                Twitter users create and use hashtags to infomaly tag messages with a specific theme or content. We explored whether hashtags mentioned in the dataset could be used to identify the sentiment of the tweet. We found 780 different hashtags, with a total of 1932 quotations. Among them, the more repeated ones are <kbd>#holaargentina</kbd> and <kbd>#holacolombia</kbd>, which are related to the two marketing campaigns by Iberia mentioned previously. They are followed by <kbd>#iberia</kbd> and <kbd>#ryanair</kbd>. We observe that in the case of negative tweets, most hashtags refer to airlines while for positive and neutral, although a lot refer also to iberia, we see that there are a significant amount of them referring to other issues (<kbd>#marketing</kbd>, <kbd>#holaeuropa</kbd>, <kbd>#holaargentina</kbd>, etc.).
+            </p>  
+            <h3>
+                Emoji
+            </h3>
+            <p class="text-justify">
+                Emoji are pictographs (pictorial symbols) that are typically presented in a colorful form and used inline in text. They represent things such as faces, weather, vehicles and buildings, food and drink, animals and plants, or icons that represent emotions and feelings.<br>
+                We selected from the dictionary of UNICODE emojis those associated with positive or negative emotions. Those associated with negative emotions have short names with words such as <kbd>fear, worried, frown, cry, scream, etc</kbd>. While those associated with positive emotions have short names containing words such as <kbd>grin, joy, smile, OK, thumbs up, etc</kbd>. Then we identified which tweets contained these emoji and grouped them into two classes: “positive” and “negative”. We identified a total of 280 tweets with emoji, which represent 4% of the tweets in the dataset.<br>
+                The sentiment information contained in the emoji was also analyzed. On one hand, we observed that those tweets containing only positive emoji were mostly positive (42%) or neutral (38%). The negative tweets containing positive emoji (19%) showed sarcasm and some mislabeling.<br>
+                On the other hand, tweets containing only negative emoji were mostly negative (76%). The positive tweets containing a negative emoji are few (8%) and reveal a bad use of negative emoji in the context.<br>
+                Finally, tweets containing both positive and negative emoji are almost always (83%) negative. Thus we conclude that negative emoji are great indicators of negative sentiment tweet, while positive emoji are not as certain in reflecting a positive tweet sentiment.
+            </p> 
+        </div>
+        
+        <div class="container" id="section2">
+            <hr>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                      <label class="btn btn-secondary active" id="general">
+                        <input type="radio" name="options" autocomplete="off" id="general">general
+                      </label>
+                      <label class="btn btn-secondary" id="positive">
+                        <input type="radio" name="options" autocomplete="off">positivos
+                      </label>
+                      <label class="btn btn-secondary" id="negative">
+                        <input type="radio" name="options" autocomplete="off">negativos
+                      </label>
+                      <label class="btn btn-secondary" id="neutral">
+                        <input type="radio" name="options" autocomplete="off">neutros
+                      </label>                        
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-12 mapBox" id="mapid"></div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-6" id="pieChart"></div>
+                <div class="col-6" id="barChart"></div>                                     
+            </div>
+            <div class="row">
+                <div class="col-6" id="lineChartDate"></div>
+                <div class="col-6" id="lineChartTime"></div>                                     
+            </div>         
+        </div>
+    
+        <div class="container" id="section3">
+            <hr>
+            <h1>
+                Classifier
+            </h1>
+            <p class="text-justify">
+                Sentiment classification of a tweet dataset represents a Natural Language Processing (NLP) problem. In order to achieve a good classification, in all NLP challenges there are a number of steps to be done before starting the actual classification. These steps are crucial for a good classification result and because of that we paid special attention to the cleaning process and the preparation of our dataset.<br>
+                By taking a look into the data we found that in the original dataset there were way more negative labeled tweets (48%) than positive (19%) or neutral (33%). This fact, as we will see a little bit further away, will bias our model to be very good at identifying the negative tweets, but not as good at distinguishing between neutral and positive tweets. But let’s not make spoilers!<br>
+                After a first sneak into the data, we realized that there were a number of tweets with identical text that were repeated up to hundreds of times. In some cases, their sentiment label was not uniform. Some were classified as positive and some as neutral: for instance, the tweet “Con @Iberia, mi destino a un solo click. !Deseadme suerte! #HolaColombia. Hola 79 destinos europeos al mejor precio” appears a total of 153 times, of which it is classified as negative 21 times, 76 as neutral and 56 as positive. This would add a lot of confusion into our model, since it would find the exact same vector with two or three different classifications! The total number of tweets with mislabeling is 1178. We decided that the best thing to do was removing these tweets. After that, we started with the cleaning of the remaining dataset.<br>
+                First, we identified which tweets contained positive or negative emoji, which nowadays represents not a negligible fraction of the information in tweets: about 4% of tweets contain emojis (http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0144296). To this scope we selected the most representative emoji related to positive and negative sentiments as defined by the UNICODE emoji list and created a list of emojis for each sentiment. Then, we searched for these into the tweets and created two new columns for each tweet for positive and negative emoji respectively, containing the number of positive or negative emoji that appeared in the tweet. We were able to identify 280 emoji in total.<br>
+                In a second step, we performed a first cleaning of the text by:<br>
+            </p>
+            <dl>
+                <li>converting all tweets into lower case</li>
+                <li>removing accents -> this removes also emoji</li>
+                <li>removing punctuation (this includes removing special characters such as “@” and “#”)</li>
+                <li>removing additional white spaces</li>
+                <li>substituting repetitions of more than 2 letters by one single character</li>
+                <li>removing numbers</li>
+                <li>removing URLs</li>
+                <li>removing words common in Twitter but meaningless for the classificator: via, by, RT</li>
+            </dl>
+            <p class="text-justify">
+                All of these tasks were performed taking advantage of the regular expression package in python.<br>
+                In a further step, we also took the time information column and created 24 columns, for the hours of the day. We looked into the tweet_created field and extracted the hour at which the tweet was created. Then, we filled the corresponding hour column with a 1 and the rest with zeros.<br>
+                These columns (the ones with the emojis and the ones with the hours) were then be added to the vocabulary matrix containing the tokens frequencies. But first, there are a few steps remaining.<br>
+                An important step in every NLP is to reduce the amount of vocabulary that is present in the text, but keeping the total amount of information. This can be done by stemming and lemmatizing the words, i.e. reducing them to their root (for instance, verb forms can be reduced to infinitive). We also took into account common words in language that do not add meaning into the text (such as prepositions, articles, etc.) and removed them from the tweets (those are the so called stop-words).<br>
+                After these steps were done, we took all tweets and tokenized them, this is, we separated every tweet into its word components and then built a matrix containing as many rows as tweets in the sample, and as many columns as different words in the sample. Then, each tweet could be represented by a vector of 0’s and 1’s depending on the words that appeared in it. This is very useful for feeding the machine learning algorithm that has to “learn” the characteristics of every classification category. It has, however, the disadvantage of not taking into account the order of appearance words. To try and solve a bit of this problem, we took into account not only single words to build this matrix, but also 2-grams, which are groups of two words. This is very reasonable, since it is absolutely not the same to say “good” than “not good”. These 2-grams will form part of the matrix as well. The matrix with the token occurrences was built using the CountVectorizer function within scikit-learn.<br>
+                Once built, we manually added to the matrix some new columns, such as the hours of the day and the emojis, that we created in the previous steps. Why? Because, for emojis, it is clear that they are as important as words, or can even add more meaning than words (remember that an image is worth more than a 1000 words!); for the hour of the day, we think that it adds also information, since there are differences in the tweets that people write, depending on the moment of day: usually at afternoon and night is when, for instance, most delayed flights are, and so it is more probable that people complains to the companies using twitter.<br>
+                After all these steps, we finally can create the frequency matrix, by means of the TfIdfTransform: with this algorithm we transformed the count matrix into term-frequency times inverse document-frequency (tf-idf) matrix. Why? Well, quoting the scikit-learn documentation, “the goal of using tf-idf instead of the raw frequencies of occurrence of a token in a given tweet is to scale down the impact of tokens that occur very frequently in a given corpus and that are hence empirically less informative than features that occur in a small fraction of the training corpus”.<br>
+                Once we have the final matrix, we can upload it into the machine learning algorithm.<br>
+                This final matrix is, as usual, split in train and test subsets in order to check the performance of the model used in a, so far, not seen part of the data. To classify the tweets into the three categories (negative, neutral and positive) we explored a set of models and selected the one with the best performance on the test subset.<br>
+                The models we tested belong mainly to two families: on one hand, we used linear support vector machines type models from the scikit-learn python package (ref?). These models are the LinearSVC and the SGDClassifier, and the basic difference between them is that the latter uses a stochastic gradient descent training. The performance of these models, even though it was not bad, was overcomed by a neural network type model.<br>
+                On the other hand, as already stated, we tested an artificial neural network type model and finally selected this family of models to do the final classification. The explored model was the MLPClassifier from scikit-learn which is basically a multi-layer perceptron with one hidden layer, and a model from the python package Keras. The Keras package allows us to customize the architecture of the artificial neural network with an easy-to-use interface.<br>
+                The architecture used for the final classification was a simple multi-layer perceptron with three hidden layers with a “relu” activation function, with a decreasing number of neurons in each layer (2000, 1000 and 500) with a final output layer, with a “softmax” activation function, of three neurons corresponding to the three categories. Between each layer we include a dropout layer of 20% in order to avoid a possible overfitting.<br>
+                It is worth to mention that we also explored a different architecture of the artificial neural network including convolutional and pooling layers. This way the net learns about the possible correlations between the features of the input layer, so it may lead to an even better classification. Due to our limited knowledge on the implementation of these layers and the limited time to upload the final classification, we had to discard this kind of architecture.<br>
+                We can inspect which are the most relevant words that our model picked up for each sentiment. As we said, since our classificator is biassed towards the negative sentiment, the words that it picks up are more related to negative tweets, while for neutral and positive, the most important words are pretty similar. It can be seen in the figure below. The reason for that is that in our initial sample there are more negative tweets than positive or neutral. Moreover, it is clear that to distinguish between neutral and positive is difficult (as seen in the repeated tweets with more than one classification). And finally, we know that the final dataset with which the model has been validated is even more unbalanced towards negative sentiment, and hence, the model is better at picking negative tweets.
+            </p>
+        </div>
+    
+        <div class="container" id="section4">
+            <hr>
+            <h1>
+                Conclusions
+            </h1>
+            <p class="text-justify">
+                To conclude, we can say that in this dataset there is an unbalance between negative and the other two classes of sentiment. However, this obeys the human nature: we are more prone to complain about services that we expect once we have paid for them than thanking for these services.<br>
+                With that said, we observe that, in this case, most of the tweets refer to one single airline (Iberia in this case) and it is normal since it is the biggest airline within the tweets dataset. We also observe that geographically, most of people writing come from Spain and the US, although there is a big amount of people from all around Europe and South America.<br>
+                The time information is the most valuable in order to understand the complaining behaviour of the people, since it allows us to identify the events that triggered the negative answer. For positive and neutral it is more dificult.<br>
+                Hashtags and airline allusions do not tell us much about the dataset. However, some information can be extracted: for hashtags, negative ones are more explicit about what made people write the tweet, while for the other two categories it is more unclear.<br>
+                Finally, the emojis tell us that people use them for negative expressions, while positive ones are often used for positive and neutral tweets. If there is a negative emoji, the tweet will, almost always, be negative.<br>
+                As a general conclusion, we can say that people write more for complaining than for thanking, and also that a NLP problem such as the sentiment analysis of tweets is more effective to detect the negative sentiment than any other, at least with the approach that we took.
+            </p>
+        </div>
+        
+        <footer class="container page-footer font-small teal pt-4">
+            <hr>
+            <div class="footer-copyright text-center py-3">
+                <a>Neus Àgueda, Alfred Castro, Pere Munar, Ivan Nikitskiy & André Resende</a>
+            </div>
+        </footer>
+              
+        <script src="script/data.js"></script>
+        <script src="script/charts.js"></script>
+        <script src="script/index.js"></script>
+    </body>
+</html>

@@ -1,8 +1,8 @@
-#Description
+<h1> Description </h1>
 
 Alfred Castro-Ginard personal website
 
-##Template
+<h2> Template </h2>
 
 Note
 ====

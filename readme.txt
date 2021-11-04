@@ -1,3 +1,9 @@
+# Description
+
+Alfred Castro-Ginard personal website
+
+## Template
+
 Note
 ====
 Free-Portfolio-HTML5-Responsive-Website-Sam

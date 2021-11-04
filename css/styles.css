@@ -929,14 +929,14 @@ footer {
 background: #DBDBDB;	
 	}
 #contactUs{
-	 background: #3394D5;
+	 background: #000000;
 }
 #contactUs p{
 color:#000;
 }
 #contactUs .btn{
-background: #fff;
-color: #5887FF;
+background: #000000;
+color: #000000;
 }
 #contactUs .btn:hover{
 color: #000;
